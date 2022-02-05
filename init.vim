@@ -5,7 +5,6 @@ set shiftwidth=4
 set expandtab
 set wildmenu 
 set smartindent
-"set rnu relativenumber " relative line number
 set number
 set nowrap
 set smartcase 
@@ -19,6 +18,9 @@ set incsearch
 set formatoptions-=cro
 set background=dark
 set nrformats=alpha
+" insert mode; no recursive; map; <from>; <to>
+inoremap jj <Esc> 
+
 call plug#begin("~/.vim-back/plugged")
 " add plugins here
     Plug 'ps173/dadara' 
@@ -34,7 +36,11 @@ call plug#begin("~/.vim-back/plugged")
     "Plug 'ryanoasis/vim-devicons'
     Plug 'airblade/vim-gitgutter'
     Plug 'tpope/vim-fugitive'
+    Plug 'junegunn/fzf.vim'
+    Plug 'junegunn/fzf'
+    Plug 'ggreer/the_silver_searcher'
 " Intellisense and code completion with syntax highlighting
+    Plug 'prettier/vim-prettier', { 'do': 'npm install' }
     Plug 'neoclide/coc.nvim', {'branch': 'release'}
     let g:coc_global_extensions = ['coc-css', 'coc-html', 'coc-json', 'coc-tsserver']
     Plug 'sheerun/vim-polyglot'
@@ -42,119 +48,41 @@ call plug#begin("~/.vim-back/plugged")
     Plug 'tpope/vim-commentary'
     Plug 'Yggdroot/indentLine'
 " Airline
-" Install sudo apt install fonts-powerline
-    Plug 'vim-airline/vim-airline'
-    Plug 'vim-airline/vim-airline-themes'
+    Plug 'itchyny/lightline.vim'
 call plug#end()
+
 colorscheme space-vim-dark
-
-
-if !exists('g:airline_symbols')
-    let g:airline_symbols = {}
-endif
- 
-" unicode symbols
-let g:airline_left_sep = '»'
-let g:airline_left_sep = '▶'
-let g:airline_right_sep = '«'
-let g:airline_right_sep = '◀'
-let g:airline_symbols.crypt = '🔒'
-let g:airline_symbols.linenr = '☰ '
-let g:airline_symbols.linenr = '␊'
-let g:airline_symbols.linenr = '␤'
-let g:airline_symbols.linenr = '¶'
-let g:airline_symbols.maxlinenr = ''
-let g:airline_symbols.maxlinenr = '㏑'
-let g:airline_symbols.branch = '⎇'
-let g:airline_symbols.paste = 'ρ'
-let g:airline_symbols.paste = 'Þ'
-let g:airline_symbols.paste = '∥'
-let g:airline_symbols.spell = 'Ꞩ'
-let g:airline_symbols.notexists = 'Ɇ'
-let g:airline_symbols.whitespace = 'Ξ'
- 
-" powerline symbols
-let g:airline_left_sep = ''
-let g:airline_left_alt_sep = ''
-let g:airline_right_sep = ''
-let g:airline_right_alt_sep = ''
-let g:airline_symbols.branch = ''
-let g:airline_symbols.readonly = ''
-let g:airline_symbols.linenr = '☰ '
-" let g:airline_symbols.maxlinenr = ''
-
-
-" powerline symbols
-"let g:airline_left_sep = ''
-"let g:airline_left_alt_sep = ''
-"let g:airline_right_sep = ''
-"let g:airline_right_alt_sep = ''
-"let g:airline_symbols.branch = ''
-"let g:airline_symbols.readonly = ''
-"let g:airline_symbols.linenr = '☰'
-"let g:airline_symbols.maxlinenr = ''
-"let g:airline_symbols.dirty='⚡'
-
-" let g:airline_powerline_fonts = 1
-
-"set guifont=Droid\ Sans\ Mono\ for\ Powerline\ Plus\ Nerd\ File\ Types\ 11
-"set guifont =Hack \10
-"set guifont=Droid\ Sans\ Mono\ for\ Powerline\ Nerd\ Font\ Complete\ 12
-"set encoding=utf8
-"
-"
-
-if !exists('g:airline_symbols')
-  let g:airline_symbols = {}
-endif
-
-" unicode symbols
-let g:airline_left_sep = '»'
-let g:airline_left_sep = '▶'
-let g:airline_right_sep = '«'
-let g:airline_right_sep = '◀'
-let g:airline_symbols.colnr = ' ㏇:'
-let g:airline_symbols.colnr = ' ℅:'
-let g:airline_symbols.crypt = '🔒'
-let g:airline_symbols.linenr = '☰'
-let g:airline_symbols.linenr = ' ␊:'
-let g:airline_symbols.linenr = ' ␤:'
-let g:airline_symbols.linenr = '¶'
-let g:airline_symbols.maxlinenr = ''
-let g:airline_symbols.maxlinenr = '㏑'
-let g:airline_symbols.branch = '⎇'
-let g:airline_symbols.paste = 'ρ'
-let g:airline_symbols.paste = 'Þ'
-let g:airline_symbols.paste = '∥'
-let g:airline_symbols.spell = 'Ꞩ'
-let g:airline_symbols.notexists = 'Ɇ'
-let g:airline_symbols.whitespace = 'Ξ'
-
-" powerline symbols
-let g:airline_left_sep = ''
-let g:airline_left_alt_sep = ''
-let g:airline_right_sep = ''
-let g:airline_right_alt_sep = ''
-let g:airline_symbols.branch = ''
-" let g:airline_symbols.colnr = ' :'
-let g:airline_symbols.readonly = ''
-let g:airline_symbols.linenr = ' :'
-let g:airline_symbols.maxlinenr = '☰ '
-let g:airline_symbols.dirty='⚡'
-
-
-
-
-
+" Filename in lightline
+let g:lightline = {
+      \ 'colorscheme': 'one',
+      \ 'active': {
+      \   'left': [ [ 'mode', 'paste' ],
+      \             [ 'gitbranch', 'readonly', 'filename', 'modified' ] ]
+      \ },
+      \ 'component_function': {
+      \   'gitbranch': 'FugitiveHead',
+      \   'filename': 'LightlineFilename',
+      \ },
+      \ }
+function! LightlineFilename()
+  let root = fnamemodify(get(b:, 'git_dir'), ':h')
+  let path = expand('%:p')
+  if path[:len(root)-1] ==# root
+    return path[len(root)+1:]
+  endif
+  return expand('%')
+endfunction
+" PRETTIER
+let g:prettier#autoformat = 1
+let g:prettier#autoformat_require_pragma = 0
 " NERD TREE AND ICONS
 let g:NERDTreeShowHidden = 1
 let g:NERDTreeMinimalUI = 0
 let g:NERDTreeIgnore = ['node_modules']
 let NERDTreeStatusline='NERDTree'
-" Automaticaly close nvim if NERDTree is only thing left open
-autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 " File explorer plugin
 map <C-b> :NERDTreeToggle<CR>
+nmap <F6> :NERDTreeToggle<CR>
 " nerd commenter
 noremap <leader>c :NERDCommenterComment<CR>
 " use alt+hjkl to move between split/vsplit panels
@@ -176,4 +104,3 @@ nnoremap <silent> <C-Down>    :resize -2<CR>
 nnoremap <silent> <C-Up>  :resize +2<CR>
 nnoremap <silent> <C-Left>  :vertical resize -2<CR>
 nnoremap <silent> <C-Right> :vertical resize +2<CR>
-
