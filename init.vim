@@ -19,7 +19,7 @@ set formatoptions-=cro
 set background=dark
 set nrformats=alpha
 
-source ~/.vimrc.bepo
+source ~/.config/nvim/vimrc.bepo
 
 " insert mode; no recursive; map; <from>; <to>
 inoremap jj <Esc> 
