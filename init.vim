@@ -19,7 +19,7 @@ set formatoptions-=cro
 set background=dark
 set nrformats=alpha
 
-source ~/.config/nvim/vimrc.bepo
+" source ~/.config/nvim/vimrc.bepo
 
 " insert mode; no recursive; map; <from>; <to>
 inoremap jj <Esc> 
@@ -30,7 +30,7 @@ call plug#begin("~/.vim-back/plugged")
     Plug 'gruvbox-community/gruvbox'
     Plug 'liuchengxu/space-vim-dark'
     Plug 'dracula/vim', { 'as': 'dracula' }
-"CSS properties and color selector
+" CSS properties and color selector
     Plug 'KabbAmine/vCoolor.vim'
     Plug 'lilydjwg/colorizer'
 " File explorer
