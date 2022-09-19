@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+killall xidlehook
+
+# Run xidlehook
+xidlehook \
+  `# Don't lock when there's a fullscreen application` \
+  --not-when-fullscreen \
+  `# Don't lock when there's audio playing` \
+  --not-when-audio \
+  --timer 870 \
+    'notify-send -t 30000 "Vérouillage dans 30s"' \
+    '' \
+    --timer 30 \
+    'i3lock -c 000000' \
+    '' \
+  --timer 300 \
+    'systemctl suspend' \
+    '' \
+  &
+

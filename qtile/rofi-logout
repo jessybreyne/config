@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+
+question=$(echo "lock|logout|suspend|reboot|shutdown" | rofi -sep "|" \
+    -dmenu -i -p 'System: ' "" -width 20 -hide-scrollbar \
+    -eh 1 -line-padding 4 -padding 20 -lines 4 -color-enabled -config ~/.config/rofi/powermenu.rasi)
+
+case $question in
+    *lock)
+        i3lock -c 000000
+        ;;
+    *logout)
+        pkill -u jessy
+        #command -v gnome-session-quit 2>/dev/null 2>&1 || command -v session-logout >/dev/null 2>&1
+        # command -v session-logout
+        ;;
+    *suspend)
+        systemctl suspend
+        ;;
+    *reboot)
+        systemctl reboot
+        ;;
+    *shutdown)
+        systemctl poweroff
+        ;;
+    *)
+        exit 0  # do nothing on wrong response
+        ;;
+esac
