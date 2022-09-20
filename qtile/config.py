@@ -154,11 +154,42 @@ def init_widgets_list():
                 'Button3': lambda: qtile.cmd_spawn('brave https://calendar.google.com/calendar/u/0/r'),
             },
         ),
-        widget.CurrentLayout( foreground = colors[1], background = colors[7], padding = 5),
-        widget.WindowName( foreground = colors[2], background = colors[0], padding = 5),
-        widget.Sep( linewidth = 0, padding = 6, foreground = colors[0], background = colors[0]),
-        widget.Systray( background = colors[0], padding = 5),
-        widget.Sep( linewidth = 0, padding = 6, foreground = colors[0], background = colors[0]),
+        widget.CurrentLayout(foreground = colors[1], background = colors[7], padding = 5),
+        widget.GroupBox(
+            highlight_method='block',
+            active = "#ffffff",
+            inactive = "#000000",
+            # block_highlight_text_color = colors[1],
+            # highlight_color = colors[9],
+            this_current_screen_border = colors[9],
+            this_screen_border = colors[9],
+            # active = colors[7],
+            background = colors[7],
+            other_screen_border = "#555555",
+            other_current_screen_border = "#222222",
+            # other_current_screen_border = colors[7],
+            margin_x = 0,
+            # hide_unused = True
+        ),
+        widget.WindowName(foreground = colors[2], background = colors[0], padding = 5),
+        widget.Sep(linewidth = 0, padding = 6, foreground = colors[0], background = colors[0]),
+        widget.Systray(background = colors[0], padding = 5),
+        widget.Sep(linewidth = 0, padding = 6, foreground = colors[0], background = colors[0]),
+        widget.CPU(
+            format = 'CPU: {load_percent:03.0f}%',
+            mouse_callbacks = {
+                'Button1': lambda: qtile.cmd_spawn(myTerm + ' vtop'),
+                'Button3': lambda: qtile.cmd_spawn(myTerm + ' stress --cpu 8'),
+            },
+        ),
+        widget.Memory(
+            measure_mem = 'G', 
+            format='{MemUsed: .1f}{mm}/{MemTotal: .0f}{mm}',
+            mouse_callbacks = {
+                'Button1': lambda: qtile.cmd_spawn(myTerm + ' htop'),
+                'Button3': lambda: qtile.cmd_spawn(myTerm + ' glances'),
+            },
+        ),
         widget.Volume(
             foreground = colors[1],
             background = colors[7],
@@ -186,7 +217,7 @@ def init_widgets_screen1():
 
 def init_widgets_screen2():
     widgets_screen2 = init_widgets_list()
-    del widgets_screen2[4]               # Slicing removes unwanted widgets (systray) on Monitors 1,3
+    del widgets_screen2[5]               # Slicing removes unwanted widgets (systray) on Monitors 1,3
     return widgets_screen2                 # Monitor 2 will display all widgets in widgets_list
 
 def init_screens():
