@@ -6,7 +6,7 @@ set expandtab
 set wildmenu 
 set smartindent
 set number
-set nowrap
+set wrap
 set smartcase 
 set noswapfile "no swap file (vim creates them by default) 
 set nobackup "no backup file
